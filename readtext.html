@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Extract ChatGPT Messages</title>
+</head>
+<body>
+  <script>
+    // Paste the JavaScript code here
+    const url = "https://chat.openai.com/chat/457da351-0f21-4beb-8464-43833d04949c";
+
+// Send a GET request to the URL to get the HTML content
+fetch(url)
+  .then(response => response.text())
+  .then(html => {
+    // Parse the HTML content using the DOM API
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    // Find all the chat messages in the document
+    const chatMessages = doc.querySelectorAll(".chat-message");
+
+    // Filter out the messages that are not from ChatGPT
+    const chatGPTMessages = [...chatMessages].filter(message => {
+      const author = message.querySelector(".message__source-name");
+      return author && author.textContent.trim() === "ChatGPT";
+    });
+
+    // Print the ChatGPT messages to the console
+    chatGPTMessages.forEach(message => {
+      const text = message.querySelector(".message__content-text");
+      console.log(text ? text.textContent.trim() : "");
+    });
+  })
+  .catch(error => console.error(error));
+
+  </script>
+</body>
+</html>
